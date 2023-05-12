@@ -81,42 +81,25 @@ resource "aws_subnet" "private_subnet2" {
   }
 }
 
-// Crear grupos de seguridad para SSH y HTTP
-resource "aws_security_group" "ssh_sg" {
-  name_prefix = "ssh-sg"
+// Crear grupos de seguridad que permita todo el tráfico
+
+resource "aws_security_group" "allow_all" {
+  name_prefix = "allow_all"
   vpc_id = aws_vpc.vpc_alberto.id
 
   ingress {
-    from_port = 22
-    to_port = 22
+    from_port = 0
+    to_port = 65535
     protocol = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
   egress {
-    from_port = 22
-    to_port = 22
+    from_port = 0
+    to_port = 65535
     protocol = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-}
-
-resource "aws_security_group" "http_sg" {
-  name_prefix = "http-sg"
-  vpc_id = aws_vpc.vpc_alberto.id
-
-  ingress {
-    from_port = 80
-    to_port = 80
-    protocol = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  egress {
-    from_port = 80
-    to_port = 80
-    protocol = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
+} 
 
 // Crear una puerta de enlace
 resource "aws_internet_gateway" "example_igw" {
@@ -192,7 +175,7 @@ resource "aws_launch_template" "lanzamiento_alberto" {
   name = "instancia-alberto"
   image_id = "ami-0a242269c4b530c5e" 
   instance_type = "t2.micro"
-  vpc_security_group_ids = ["${aws_security_group.http_sg.id}","${aws_security_group.ssh_sg.id}" ]
+  vpc_security_group_ids = ["${aws_security_group.allow_all.id}"]
   key_name = "Clave-Alberto" 
   user_data = filebase64("http.sh")
 }
