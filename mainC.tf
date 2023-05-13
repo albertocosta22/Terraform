@@ -1,3 +1,5 @@
+//Creación correcta de entorno
+
 terraform {
   required_providers {
     aws = {
