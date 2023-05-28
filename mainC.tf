@@ -126,10 +126,6 @@ resource "aws_internet_gateway" "example_igw" {
   vpc_id = aws_vpc.vpc_alberto.id
 }
 
-//Crear Elastic IP
-resource "aws_eip" "eip" {
-  vpc = true
-}
 
 //Crear nat gateway
 resource "aws_nat_gateway" "nat_gw" {
@@ -242,7 +238,7 @@ resource "aws_autoscaling_group" "asg" {
   max_size            = 4
   min_size            = 1
   desired_capacity    = 2
-  vpc_zone_identifier =  ["${aws_subnet.private_subnet.id}","${aws_subnet.private_subnet1.id}", "${aws_subnet.private_subnet2.id}"]
+  vpc_zone_identifier =  ["${aws_subnet.public_subnet.id}","${aws_subnet.public_subnet1.id}", "${aws_subnet.public_subnet2.id}"]
   health_check_type   = "EC2"
 
   launch_template {
